@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core"
+import { makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles({
     navbar: {
@@ -12,8 +12,8 @@ const useStyles = makeStyles({
         flexGrow: 1,
     },
     brand: {
-        fontWeight: "bold",
-        fontSize: "1.5rem"
+        fontWeight: 'bold',
+        fontSize: '1.5rem'
     },
     main: {
         minHeight: '80vh'

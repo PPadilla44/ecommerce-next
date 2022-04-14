@@ -1,17 +1,21 @@
 import Head from 'next/head'
-import React from 'react'
+import React, { useContext } from 'react'
 import NextLink from "next/link"
-import { AppBar, Toolbar, Typography, Container, Link, createTheme, ThemeProvider, CssBaseline } from "@material-ui/core"
+import { AppBar, Toolbar, Typography, Container, Link, createTheme, ThemeProvider, CssBaseline, Switch } from "@material-ui/core"
 import useStyles from "../utils/styles"
+import { Store } from "../utils/Store"
+import Cookies from "js-cookie"
 
-
-interface LayoutProps {
+type LayoutProps = {
     title?: string;
     description?: string;
-    children: React.ReactNode
+    children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
+const Layout = ({ children, title, description }: LayoutProps) => {
+
+    const { state, dispatch } = useContext(Store);
+    const { darkMode } = state;
 
     const theme = createTheme({
         typography: {
@@ -25,12 +29,9 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
                 fontWeight: 400,
                 margin: "1rem 10"
             },
-            body1: {
-                fontWeight: "normal"
-            }
         },
         palette: {
-            type: "light",
+            type: darkMode ? 'dark' : 'light',
             primary: {
                 main: "#f0c000"
             },
@@ -39,7 +40,15 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
             }
         }
     })
+    
     const classes = useStyles();
+
+
+    const darkModeChangeHandler = () => {
+        dispatch!({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
+        const newDarkMode = !darkMode;
+        Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
+    }
 
     return (
         <div>
@@ -60,6 +69,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
                         </NextLink>
                         <div className={classes.grow}></div>
                         <div>
+                            <Switch checked={darkMode} onChange={darkModeChangeHandler} />
                             <NextLink href={"/cart"} passHref>
                                 <Link>Cart</Link>
                             </NextLink>
