@@ -1,22 +1,25 @@
 import Head from 'next/head'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import NextLink from "next/link"
 import { AppBar, Toolbar, Typography, Container, Link } from "@material-ui/core"
 import useStyles from "../utils/styles"
 
 
 interface LayoutProps {
-    children: React.ReactChild;
+    title?: string;
+    description?: string;
+    children: React.ReactNode
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
 
     const classes = useStyles();
 
     return (
         <div>
             <Head>
-                <title>Next Amazona</title>
+                <title>{ title ? `${title} - Next Amazona` : 'Next Amazona' }</title>
+                { description && <meta name="description" content={description}/> }
             </Head>
             <AppBar position='static' className={classes.navbar}>
                 <Toolbar>
