@@ -50,7 +50,7 @@ const data = {
         },
         {
             name: "Fit Pants",
-            slig: "fit-pants",
+            slug: "fit-pants",
             category: "Pants",
             image: "images/pants2.jpg",
             price: 95,
@@ -62,7 +62,7 @@ const data = {
         },
         {
             name: "Classic Pants",
-            slig: "classic-pants",
+            slug: "classic-pants",
             category: "Pants",
             image: "images/pants3.jpg",
             price: 75,
