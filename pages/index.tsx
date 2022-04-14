@@ -9,7 +9,7 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <div>
-        <h1>Proudcts</h1>
+        <h1>Products</h1>
         <Grid container spacing={3}>
           {
             data.products.map((product) => (
