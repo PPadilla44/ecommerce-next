@@ -2,14 +2,16 @@ import Cookies from "js-cookie";
 import React, { createContext, useReducer } from "react";
 import { ProductType } from "../types";
 
+export type CartItem = ProductType & { quantity: number };
+
 
 export type CartType = {
-    cartItems: (ProductType & { quantity: number })[]
+    cartItems: CartItem[];
 }
 
 export type StateProps = {
     darkMode: boolean;
-    cart: CartType
+    cart: CartType;
 }
 const initialState: StateProps = {
     darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
@@ -24,6 +26,7 @@ export declare type StoreActionKind =
     'DARK_MODE_ON'
     | 'DARK_MODE_OFF'
     | 'CART_ADD_ITEM'
+    | 'CART_REMOVE_ITEM'
     ;
 
 export interface Action {
@@ -45,6 +48,11 @@ function reducer(state: StateProps, action: Action): StateProps {
                 state.cart.cartItems.map((item) => item.name === existItem.name ? newItem : item)
                 :
                 [...state.cart.cartItems, newItem];
+            Cookies.set('cartItems', JSON.stringify(cartItems))
+            return { ...state, cart: { ...state.cart, cartItems } }
+        }
+        case 'CART_REMOVE_ITEM': {
+            const cartItems = state.cart.cartItems.filter(item => item._id !== action.payload._id);
             Cookies.set('cartItems', JSON.stringify(cartItems))
             return { ...state, cart: { ...state.cart, cartItems } }
         }
