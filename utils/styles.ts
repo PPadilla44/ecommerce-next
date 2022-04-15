@@ -25,6 +25,10 @@ const useStyles = makeStyles({
     section: {
         marginBottom: 10,
         marginTop: 10
+    },
+    form: {
+        maxWidth: 800,
+        margin: '0 auto'
     }
 })
 
