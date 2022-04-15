@@ -2,8 +2,9 @@ import Cookies from "js-cookie";
 import React, { createContext, useReducer } from "react";
 import { ProductType } from "../types";
 
+
 export type CartType = {
-    cartItems: ProductType[] & { quantity: number }[]
+    cartItems: (ProductType & { quantity: number })[]
 }
 
 export type StateProps = {

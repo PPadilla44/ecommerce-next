@@ -85,7 +85,7 @@ const Layout = ({ children, title, description }: LayoutProps) => {
                                 <Link>
                                     {
                                         cart.cartItems.length > 0 ?
-                                            <Badge color='secondary' badgeContent={cart.cartItems.length}>
+                                            <Badge overlap='rectangular' color='secondary' badgeContent={cart.cartItems.length}>
                                                 Cart
                                             </Badge>
                                             :
