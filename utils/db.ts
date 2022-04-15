@@ -1,4 +1,5 @@
 import mongoose, { LeanDocument } from "mongoose";
+import { ProductType } from "../types";
 
 
 const connection: { isConnected?: boolean | number } = {};
@@ -34,10 +35,10 @@ const disconnect = async () => {
     }
 }
 
-const covertDocToObj = (doc: LeanDocument<any>) => {
-    doc._id = doc._id.toString();
-    doc.createdAt = doc.createdAt.toString();
-    doc.updatedAt = doc.updatedAt.toString();
+const covertDocToObj = (doc: LeanDocument<ProductType>) => {
+    doc._id = doc._id!.toString();
+    doc.createdAt = doc.createdAt!.toString();
+    doc.updatedAt = doc.updatedAt!.toString();
     return doc
 }
 

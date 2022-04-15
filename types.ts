@@ -1,4 +1,5 @@
 export type ProductType = {
+    _id?: string;
     name: string;
     slug: string;
     category: string;
@@ -9,4 +10,6 @@ export type ProductType = {
     numReviews: number;
     countInStock: number;
     description: string;
+    createdAt?: string;
+    updatedAt?: string;
 }

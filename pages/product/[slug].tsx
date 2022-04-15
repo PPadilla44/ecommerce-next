@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next"
-import React from 'react'
+import React, { useContext } from 'react'
 import NextLink from "next/link"
 import { Link, Grid, List, ListItem, Typography, Card, Button } from "@material-ui/core"
 import Layout from '../../components/Layout';
@@ -8,6 +8,8 @@ import Image from 'next/image';
 import db from '../../utils/db';
 import Product from '../../models/Prouct';
 import { ProductType } from '../../types'
+import axios from "axios";
+import { Store } from "../../utils/Store";
 
 interface Props {
     product: ProductType;
@@ -15,11 +17,21 @@ interface Props {
 
 
 const ProductScreen: React.FC<Props> = ({ product }) => {
-
+    
+    const { dispatch} = useContext(Store);
     const classes = useStyles();
 
     if (!product) {
         return <div>Product Not Found</div>
+    }
+
+    const addToCartHandler = async () => {
+        const { data } = await axios.get<ProductType>(`/api/products/${product._id}`);
+        if(data.countInStock <= 0 ) {
+            window.alert('Sorry. Product is out of stock');
+            return;
+        }
+        dispatch!({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1 } })
     }
 
     return (
@@ -85,7 +97,8 @@ const ProductScreen: React.FC<Props> = ({ product }) => {
                                 </Grid>
                             </ListItem>
                             <ListItem>
-                                <Button fullWidth variant='contained' color="primary">
+                                <Button fullWidth variant='contained' color="primary"
+                                onClick={addToCartHandler}>
                                     Add to cart
                                 </Button>
                             </ListItem>
