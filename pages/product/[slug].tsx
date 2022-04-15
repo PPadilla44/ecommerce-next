@@ -1,18 +1,22 @@
-import { useRouter } from 'next/router'
+import { GetServerSideProps } from "next"
 import React from 'react'
 import NextLink from "next/link"
 import { Link, Grid, List, ListItem, Typography, Card, Button } from "@material-ui/core"
 import Layout from '../../components/Layout';
-import data from '../../utils/data';
 import useStyles from '../../utils/styles';
 import Image from 'next/image';
+import db from '../../utils/db';
+import Product from '../../models/Prouct';
+import { ProductType } from '../../types'
 
-const ProductScreen = () => {
+interface Props {
+    product: ProductType;
+}
+
+
+const ProductScreen: React.FC<Props> = ({ product }) => {
 
     const classes = useStyles();
-    const router = useRouter();
-    const { slug } = router.query;
-    const product = data.products.find(a => a.slug === slug);
 
     if (!product) {
         return <div>Product Not Found</div>
@@ -91,6 +95,23 @@ const ProductScreen = () => {
             </Grid>
         </Layout>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { params } = context;
+    const slug = params?.slug;
+
+    await db.connect();
+
+    const product = await Product.findOne({ slug }).lean();
+
+    await db.disconnect();
+
+    return {
+        props: {
+            product: db.covertDocToObj(product)
+        }
+    }
 }
 
 export default ProductScreen

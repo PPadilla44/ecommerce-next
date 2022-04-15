@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-
+import mongoose, { LeanDocument } from "mongoose";
 
 
 const connection: { isConnected?: boolean | number } = {};
@@ -35,5 +34,12 @@ const disconnect = async () => {
     }
 }
 
-const db = { connect, disconnect };
+const covertDocToObj = (doc: LeanDocument<any>) => {
+    doc._id = doc._id.toString();
+    doc.createdAt = doc.createdAt.toString();
+    doc.updatedAt = doc.updatedAt.toString();
+    return doc
+}
+
+const db = { connect, disconnect, covertDocToObj };
 export default db;

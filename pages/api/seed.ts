@@ -6,7 +6,7 @@ import db from "../../utils/db";
 
 const handler = nc<NextApiRequest, NextApiResponse>();
 
-handler.get( async (req, res) => {
+handler.get(async (req, res) => {
     await db.connect();
     await Product.deleteMany();
     await Product.insertMany(data.products);

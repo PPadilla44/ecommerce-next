@@ -1,4 +1,6 @@
-const data = {
+import { ProductType } from "../types";
+
+const data: { products: ProductType[] } = {
     products: [
         {
             name: "Free Shirt",
