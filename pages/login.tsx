@@ -1,16 +1,31 @@
 import { Button, Link, List, ListItem, TextField, Typography } from '@material-ui/core'
-import React from 'react'
+import React, { useState } from 'react'
 import Layout from '../components/Layout'
 import useStyles from '../utils/styles'
 import NextLink from "next/link"
+import axios from 'axios'
 
 const Login = () => {
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     const classes = useStyles();
+
+    const submitHandler = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+
+        try {
+            const { data } = await axios.post('/api/users/login', { email, password });
+            alert('success')
+        } catch (err : any) {
+            alert(err.response.data ? err.response.data.message : err.message)
+        }
+    }
 
     return (
         <Layout title='Login'>
-            <form className={classes.form}>
+            <form onSubmit={submitHandler} className={classes.form}>
                 <Typography component="h1" variant='h1'>Login</Typography>
                 <List>
                     <ListItem>
@@ -20,6 +35,7 @@ const Login = () => {
                             id="email"
                             label="Email"
                             inputProps={{ type: "email" }}
+                            onChange={e => setEmail(e.target.value)}
                         />
                     </ListItem>
                     <ListItem>
@@ -29,6 +45,7 @@ const Login = () => {
                             id="password"
                             label="Password"
                             inputProps={{ type: "password" }}
+                            onChange={e => setPassword(e.target.value)}
                         />
                     </ListItem>
                     <ListItem>
@@ -37,7 +54,7 @@ const Login = () => {
                         </Button>
                     </ListItem>
                     <ListItem>
-                        {`Dont't have an account?`} &nbsp; 
+                        {`Dont't have an account?`} &nbsp;
                         <NextLink href={"/register"} passHref>
                             <Link>Register</Link>
                         </NextLink>

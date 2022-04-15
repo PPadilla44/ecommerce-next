@@ -5,7 +5,7 @@ import db from "../../../utils/db";
 
 const handler = nc<NextApiRequest, NextApiResponse>();
 
-handler.get( async (req, res) => {
+handler.get(async (req, res) => {
     await db.connect();
     const products = await Product.find({});
     await db.disconnect();
