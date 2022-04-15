@@ -1,6 +1,21 @@
-import { ProductType } from "../types";
+import { ProductType, UserType } from "../types";
+import bcrpyt from "bcryptjs"
 
-const data: { products: ProductType[] } = {
+const data: { users: UserType[], products: ProductType[] } = {
+    users: [
+        {
+            name: 'John',
+            email: 'admin@example.com',
+            password: bcrpyt.hashSync('123456'),
+            isAdmin: true
+        },
+        {
+            name: 'Jane',
+            email: 'user@example.com',
+            password: bcrpyt.hashSync('123456'),
+            isAdmin: false
+        },
+    ],
     products: [
         {
             name: "Free Shirt",
