@@ -1,12 +1,13 @@
 import Cookies from "js-cookie";
 import React, { createContext, useReducer } from "react";
-import { ProductType } from "../types";
+import { ProductType, ShippingAdressType } from "../types";
 
 export type CartItem = ProductType & { quantity: number };
 
 
 export type CartType = {
     cartItems: CartItem[];
+    shippingAddress: ShippingAdressType;
 }
 
 export type UserClientInfo = {
@@ -25,7 +26,8 @@ export type StateProps = {
 const initialState: StateProps = {
     darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
     cart: {
-        cartItems: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems') as string) : []
+        cartItems: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems') as string) : [],
+        shippingAddress: Cookies.get('shippingAddress') ? JSON.parse(Cookies.get('shippingAddress') as string) : {},
     },
     userInfo: Cookies.get('userInfo') ? JSON.parse(Cookies.get('userInfo') as string) : null,
 };
@@ -39,6 +41,7 @@ export declare type StoreActionKind =
     | 'CART_REMOVE_ITEM'
     | 'USER_LOGIN'
     | 'USER_LOGOUT'
+    | 'SAVE_SHIPPING_ADDRESS'
     ;
 
 export interface Action {
@@ -68,10 +71,12 @@ function reducer(state: StateProps, action: Action): StateProps {
             Cookies.set('cartItems', JSON.stringify(cartItems))
             return { ...state, cart: { ...state.cart, cartItems } }
         }
+        case 'SAVE_SHIPPING_ADDRESS':
+            return { ...state, cart: { ...state.cart, shippingAddress: action.payload } }
         case 'USER_LOGIN':
             return { ...state, userInfo: action.payload }
         case 'USER_LOGOUT':
-            return { ...state, userInfo: null, cart: { cartItems: [] } }
+            return { ...state, userInfo: null, cart: { cartItems: [], shippingAddress: {} } }
         default:
             return state
     }

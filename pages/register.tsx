@@ -78,7 +78,7 @@ const Register = () => {
                                     inputProps={{ type: "name" }}
                                     error={Boolean(errors.name)}
                                     helperText={errors.name ?
-                                        errors.name.type === 'pattern' ?
+                                        errors.name.type === 'minLength' ?
                                             'Name length is more than 1' :
                                             'Name is required' :
                                         ''}

@@ -23,3 +23,11 @@ export type UserType = {
     createdAt?: string;
     updatedAt?: string;
 }
+
+export type ShippingAdressType = {
+    fullName?: string;
+    address?: string;
+    city?: string;
+    postalCode?: string;
+    country?: string;
+}
