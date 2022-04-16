@@ -8,6 +8,7 @@ export type CartItem = ProductType & { quantity: number };
 export type CartType = {
     cartItems: CartItem[];
     shippingAddress: ShippingAdressType;
+    paymentMethod: string;
 }
 
 export type UserClientInfo = {
@@ -28,6 +29,7 @@ const initialState: StateProps = {
     cart: {
         cartItems: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems') as string) : [],
         shippingAddress: Cookies.get('shippingAddress') ? JSON.parse(Cookies.get('shippingAddress') as string) : {},
+        paymentMethod: Cookies.get('paymentMethod') ? Cookies.get('paymentMethod') as string : ""
     },
     userInfo: Cookies.get('userInfo') ? JSON.parse(Cookies.get('userInfo') as string) : null,
 };
@@ -42,6 +44,7 @@ export declare type StoreActionKind =
     | 'USER_LOGIN'
     | 'USER_LOGOUT'
     | 'SAVE_SHIPPING_ADDRESS'
+    | 'SAVE_PAYMENT_METHOD'
     ;
 
 export interface Action {
@@ -73,10 +76,12 @@ function reducer(state: StateProps, action: Action): StateProps {
         }
         case 'SAVE_SHIPPING_ADDRESS':
             return { ...state, cart: { ...state.cart, shippingAddress: action.payload } }
+        case 'SAVE_PAYMENT_METHOD':
+            return { ...state, cart: { ...state.cart, paymentMethod: action.payload } }
         case 'USER_LOGIN':
             return { ...state, userInfo: action.payload }
         case 'USER_LOGOUT':
-            return { ...state, userInfo: null, cart: { cartItems: [], shippingAddress: {} } }
+            return { ...state, userInfo: null, cart: { cartItems: [], shippingAddress: {}, paymentMethod: "" } }
         default:
             return state
     }
