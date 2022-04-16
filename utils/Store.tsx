@@ -45,6 +45,7 @@ export declare type StoreActionKind =
     | 'USER_LOGOUT'
     | 'SAVE_SHIPPING_ADDRESS'
     | 'SAVE_PAYMENT_METHOD'
+    | 'CART_CLEAR'
     ;
 
 export interface Action {
