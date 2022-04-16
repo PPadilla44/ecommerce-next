@@ -9,15 +9,25 @@ export type CartType = {
     cartItems: CartItem[];
 }
 
+export type UserClientInfo = {
+    token: string;
+    _id: string;
+    email: string;
+    isAdmin: boolean;
+    name: string;
+}
+
 export type StateProps = {
     darkMode: boolean;
     cart: CartType;
+    userInfo: UserClientInfo | null
 }
 const initialState: StateProps = {
     darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
     cart: {
         cartItems: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems') as string) : []
-    }
+    },
+    userInfo: Cookies.get('userInfo') ? JSON.parse(Cookies.get('userInfo') as string) : null,
 };
 
 export const Store = createContext<{ state: StateProps, dispatch?: React.Dispatch<Action> }>({ state: initialState });
@@ -27,6 +37,8 @@ export declare type StoreActionKind =
     | 'DARK_MODE_OFF'
     | 'CART_ADD_ITEM'
     | 'CART_REMOVE_ITEM'
+    | 'USER_LOGIN'
+    | 'USER_LOGOUT'
     ;
 
 export interface Action {
@@ -56,6 +68,10 @@ function reducer(state: StateProps, action: Action): StateProps {
             Cookies.set('cartItems', JSON.stringify(cartItems))
             return { ...state, cart: { ...state.cart, cartItems } }
         }
+        case 'USER_LOGIN':
+            return { ...state, userInfo: action.payload }
+        case 'USER_LOGOUT':
+            return { ...state, userInfo: null, cart: { cartItems: [] } }
         default:
             return state
     }

@@ -1,11 +1,24 @@
 import { Button, Link, List, ListItem, TextField, Typography } from '@material-ui/core'
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Layout from '../components/Layout'
 import useStyles from '../utils/styles'
 import NextLink from "next/link"
 import axios from 'axios'
+import { Store } from '../utils/Store'
+import { useRouter } from 'next/router'
+import Cookies from 'js-cookie'
 
 const Login = () => {
+    const router = useRouter();
+    const { redirect } = router.query;
+    const { state, dispatch } = useContext(Store);
+    const { userInfo } = state;
+
+    useEffect(() => {
+        if (userInfo) {
+            router.push('/')
+        }
+    }, [])
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,9 +30,16 @@ const Login = () => {
 
         try {
             const { data } = await axios.post('/api/users/login', { email, password });
-            alert('success')
-        } catch (err : any) {
-            alert(err.response.data ? err.response.data.message : err.message)
+            dispatch!({ type: 'USER_LOGIN', payload: data });
+            Cookies.set("userInfo", data);
+            console.log(Cookies.get('userInfo') as string);
+            
+            let test = JSON.parse(Cookies.get('userInfo') as string);
+            console.log(test);
+            
+            router.push(redirect as string || "/")
+        } catch (err: any) {
+            alert(err?.response?.data ? err.response.data.message : err.message)
         }
     }
 
