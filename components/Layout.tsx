@@ -133,13 +133,13 @@ const Layout = ({ children, title, description }: LayoutProps) => {
                                         >
                                             <MenuItem onClick={loginMenuCloseHandler}>Profile</MenuItem>
                                             <MenuItem onClick={loginMenuCloseHandler}>My account</MenuItem>
-                                            <MenuItem onClick={loginMenuCloseHandler}>Logout</MenuItem>
+                                            <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
                                         </Menu>
                                     </>
                                     :
 
                                     <NextLink href={"/login"} passHref>
-                                        <Link onClick={logoutClickHandler}>Login</Link>
+                                        <Link>Login</Link>
                                     </NextLink>
                             }
                         </div>

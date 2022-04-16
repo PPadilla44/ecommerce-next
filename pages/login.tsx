@@ -18,7 +18,7 @@ const Login = () => {
         if (userInfo) {
             router.push('/')
         }
-    }, [])
+    }, [router, userInfo])
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -31,12 +31,7 @@ const Login = () => {
         try {
             const { data } = await axios.post('/api/users/login', { email, password });
             dispatch!({ type: 'USER_LOGIN', payload: data });
-            Cookies.set("userInfo", data);
-            console.log(Cookies.get('userInfo') as string);
-            
-            let test = JSON.parse(Cookies.get('userInfo') as string);
-            console.log(test);
-            
+            Cookies.set("userInfo", JSON.stringify(data));
             router.push(redirect as string || "/")
         } catch (err: any) {
             alert(err?.response?.data ? err.response.data.message : err.message)
