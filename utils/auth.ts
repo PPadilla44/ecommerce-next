@@ -24,7 +24,8 @@ const isAuth = async (
   res: NextApiResponse,
   next: NextHandler
 ) => {
-  const { authorization } = req.headers;
+  const { authorization } = req.headers; 
+  
   if (authorization) {
     //Bearer xxx
     const token = authorization.slice(7, authorization.length);

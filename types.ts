@@ -45,14 +45,19 @@ export type OrderType = {
   }[];
   shippingAddress: ShippingAdressType;
   paymentMethod: string;
+  paymentResult: {
+    id: string;
+    status: string;
+    email_address: string;
+  }
   itemsPrice: number;
   shippingPrice: number;
   taxPrice: number;
   totalPrice: number;
   isPaid: boolean;
   isDelivered: boolean;
-  paidAt: Date;
-  deliveredAt: Date;
+  paidAt: number;
+  deliveredAt: number;
   createdAt?: string;
   updatedAt?: string;
 };
