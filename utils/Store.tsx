@@ -79,6 +79,8 @@ function reducer(state: StateProps, action: Action): StateProps {
             return { ...state, cart: { ...state.cart, shippingAddress: action.payload } }
         case 'SAVE_PAYMENT_METHOD':
             return { ...state, cart: { ...state.cart, paymentMethod: action.payload } }
+        case 'CART_CLEAR':
+            return { ...state, cart: { ...state.cart, cartItems: [], shippingAddress: {}, paymentMethod: "" }}
         case 'USER_LOGIN':
             return { ...state, userInfo: action.payload }
         case 'USER_LOGOUT':
