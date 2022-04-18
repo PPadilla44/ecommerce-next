@@ -73,7 +73,7 @@ const Layout = ({ children, title, description }: LayoutProps) => {
 
     const loginMenuCloseHandler = (e: React.SyntheticEvent, redirect: string) => {
         setAnchorEl(null);
-        if(redirect) {
+        if (redirect) {
             router.push(redirect)
         }
     }
@@ -136,6 +136,10 @@ const Layout = ({ children, title, description }: LayoutProps) => {
                                         >
                                             <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/profile')}>Profile</MenuItem>
                                             <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/order-history')}>Order History</MenuItem>
+                                            {
+                                                userInfo.isAdmin && <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/admin/dashboard')}>Admin Dashboard</MenuItem>
+
+                                            }
                                             <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
                                         </Menu>
                                     </>
