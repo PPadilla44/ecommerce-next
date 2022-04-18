@@ -4,7 +4,7 @@ import Order from "../../../models/Order";
 import Product from "../../../models/Prouct";
 import User from "../../../models/User";
 import { NextApiRequestWithUser } from "../../../types";
-import { isAuth } from "../../../utils/auth";
+import { isAuth, isAdmin } from "../../../utils/auth";
 import db from "../../../utils/db";
 import { onError } from "../../../utils/error";
 
@@ -12,7 +12,7 @@ const handler = nc<NextApiRequestWithUser, NextApiResponse>({
   onError,
 });
 
-handler.use(isAuth);
+handler.use(isAuth, isAdmin);
 
 handler.get(async (req, res) => {
   await db.connect();

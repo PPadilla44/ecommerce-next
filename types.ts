@@ -64,13 +64,27 @@ export type OrderType = {
   updatedAt?: string;
 };
 
+export type AdminOrderType  = OrderType & {
+    user: {
+      name: string;
+    }
+};
+
 export type UserRegiser = {
   name: string,
   email: string,
   password: string,
   confirmPassword: string,
-} 
+}
+
+export type UserClientInfo = {
+  token: string;
+  _id: string;
+  email: string;
+  isAdmin: boolean;
+  name: string;
+}
 
 export type NextApiRequestWithUser = NextApiRequest & {
-  user: any
+  user: UserClientInfo;
 }

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
-import { NextApiRequestWithUser, UserType } from "../types";
+import { NextApiRequestWithUser, UserClientInfo, UserType } from "../types";
 
 const signToken = (user: UserType) => {
   return jwt.sign(
@@ -23,8 +23,8 @@ const isAuth = async (
   res: NextApiResponse,
   next: NextHandler
 ) => {
-  const { authorization } = req.headers; 
-  
+  const { authorization } = req.headers;
+
   if (authorization) {
     //Bearer xxx
     const token = authorization.slice(7, authorization.length);
@@ -32,17 +32,29 @@ const isAuth = async (
       token,
       process.env.JWT_SECRET ? process.env.JWT_SECRET : "",
       (err, decode) => {
-        if(err) {
-          res.status(401).send({ message: 'Token is not valid' })
+        if (err) {
+          res.status(401).send({ message: "Token is not valid" });
         } else {
-          req.user = decode;
+          req.user = decode as UserClientInfo;
           next();
         }
       }
     );
   } else {
-    res.status(401).send({ message: 'Token is not supplied' })
+    res.status(401).send({ message: "Token is not supplied" });
   }
 };
 
-export { signToken, isAuth };
+const isAdmin = async (
+  req: NextApiRequestWithUser,
+  res: NextApiResponse,
+  next: NextHandler
+) => {
+  if (req.user.isAdmin) {
+    next();
+  } else {
+    res.status(401).send({ message: "User is not admin" });
+  }
+};
+
+export { signToken, isAuth, isAdmin };

@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import React, { createContext, useReducer } from "react";
-import { ProductType, ShippingAdressType } from "../types";
+import { ProductType, ShippingAdressType, UserClientInfo } from "../types";
 
 export type CartItem = ProductType & { quantity: number };
 
@@ -9,14 +9,6 @@ export type CartType = {
     cartItems: CartItem[];
     shippingAddress: ShippingAdressType;
     paymentMethod: string;
-}
-
-export type UserClientInfo = {
-    token: string;
-    _id: string;
-    email: string;
-    isAdmin: boolean;
-    name: string;
 }
 
 export type StateProps = {
