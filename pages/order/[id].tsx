@@ -31,7 +31,7 @@ import {
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
 
-export declare type OrderctionKind =
+export declare type OrderActionKind =
   | "FETCH_REQUEST"
   | "FETCH_SUCCESS"
   | "FETCH_FAIL"
@@ -42,7 +42,7 @@ export declare type OrderctionKind =
   ;
 
 export interface OrderAction {
-  type: OrderctionKind;
+  type: OrderActionKind;
   payload?: any;
 }
 
@@ -130,7 +130,7 @@ const Order: React.FC<OrderProps> = ({ params }) => {
     const fetchOrder = async () => {
       try {
         dispatch({ type: "FETCH_REQUEST" });
-        const { data } = await axios.get(`/api/orders/${orderId}`, {
+        const { data } = await axios.get<OrderType>(`/api/orders/${orderId}`, {
           headers: {
             authorization: `Bearer ${userInfo.token}`,
           },
