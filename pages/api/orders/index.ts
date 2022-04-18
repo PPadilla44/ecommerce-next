@@ -1,13 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
 import nc from "next-connect";
 import Order from "../../../models/Order";
+import { NextApiRequestWithUser } from "../../../types";
 import { isAuth } from "../../../utils/auth";
 import db from "../../../utils/db";
 import { onError } from "../../../utils/error"; 
-
-export type NextApiRequestWithUser = NextApiRequest & {
-    user: any
-}
 
 const handler = nc<NextApiRequestWithUser, NextApiResponse>({
     onError

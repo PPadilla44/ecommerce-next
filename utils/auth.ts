@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextApiResponse } from "next";
 import { NextHandler } from "next-connect";
-import { NextApiRequestWithUser } from "../pages/api/orders";
-import { UserType } from "../types";
+import { NextApiRequestWithUser, UserType } from "../types";
 
 const signToken = (user: UserType) => {
   return jwt.sign(

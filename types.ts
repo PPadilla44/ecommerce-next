@@ -1,3 +1,5 @@
+import { NextApiRequest } from "next";
+
 export type ProductType = {
   _id?: string;
   name: string;
@@ -61,3 +63,14 @@ export type OrderType = {
   createdAt?: string;
   updatedAt?: string;
 };
+
+export type UserRegiser = {
+  name: string,
+  email: string,
+  password: string,
+  confirmPassword: string,
+} 
+
+export type NextApiRequestWithUser = NextApiRequest & {
+  user: any
+}
