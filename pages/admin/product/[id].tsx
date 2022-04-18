@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useReducer } from "react";
 import Layout from "../../../components/Layout";
-import { ProductType, UserRegiser } from "../../../types";
+import { ProductType } from "../../../types";
 import { getError } from "../../../utils/error";
 import { Store } from "../../../utils/Store";
 import useStyles from "../../../utils/styles";
@@ -27,7 +27,11 @@ import { ParsedUrlQuery } from "querystring";
 export declare type AdminProductActionKind =
   | "FETCH_REQUEST"
   | "FETCH_SUCCESS"
-  | "FETCH_FAIL";
+  | "FETCH_FAIL"
+  | "UPDATE_REQUEST"
+  | "UPDATE_SUCCESS"
+  | "UPDATE_FAIL"
+  ;
 
 export interface AdminProductAction {
   type: AdminProductActionKind;
@@ -37,11 +41,15 @@ export interface AdminProductAction {
 export type AdminProductStateType = {
   loading: boolean;
   error: string;
+  loadingUpdate: boolean;
+  errorUpdate: string;
 };
 
 const initialProductState: AdminProductStateType = {
   loading: true,
   error: "",
+  loadingUpdate: false,
+  errorUpdate: ""
 };
 
 function reducer(
@@ -55,6 +63,12 @@ function reducer(
       return { ...state, loading: false, error: "" };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
+    case "UPDATE_REQUEST":
+      return { ...state, loadingUpdate: true, errorUpdate: "" };
+    case "UPDATE_SUCCESS":
+      return { ...state, loadingUpdate: false, errorUpdate: "" };
+    case "UPDATE_FAIL":
+      return { ...state, loadingUpdate: false, errorUpdate: action.payload };
     default:
       return state;
   }
@@ -69,7 +83,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
 
   const { state } = useContext(Store);
 
-  const [{ loading, error }, dispatch] = useReducer(
+  const [{ loading, error, loadingUpdate }, dispatch] = useReducer(
     reducer,
     initialProductState
   );
@@ -124,24 +138,26 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
 
   const classes = useStyles();
 
-  const submitHandler = async ({ name }: ProductType) => {
+  const submitHandler = async (productData: ProductType) => {
     closeSnackbar();
     try {
-      const { data } = await axios.put(
+      dispatch({ type: 'UPDATE_REQUEST' });
+      await axios.put(
         `/api/admin/products/${productId}`,
-        {
-          name,
-        },
+        productData,
         {
           headers: {
             authorization: `Bearer ${userInfo?.token}`,
           },
         }
       );
+      dispatch({ type: 'UPDATE_SUCCESS' });
       enqueueSnackbar("Product updated successfully", {
         variant: "success",
       });
+      router.push(`/admin/products`)
     } catch (err: any) {
+      dispatch({ type: 'UPDATE_FAIL' });
       enqueueSnackbar(getError(err), {
         variant: "error",
       });
@@ -247,6 +263,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                             variant="outlined"
                             fullWidth
                             id="price"
+                            type="number"
                             label="Price"
                             error={Boolean(errors.price)}
                             helperText={errors.price ? "Price is required" : ""}
@@ -331,6 +348,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                             variant="outlined"
                             fullWidth
                             id="countInStock"
+                            type="number"
                             label="Count in stock"
                             error={Boolean(errors.countInStock)}
                             helperText={errors.countInStock ? "Count in stock is required" : ""}
@@ -371,6 +389,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                       >
                         Update
                       </Button>
+                      {
+                        loadingUpdate && <CircularProgress />
+                      }
                     </ListItem>
                   </List>
                 </form>
