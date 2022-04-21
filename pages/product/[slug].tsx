@@ -52,7 +52,7 @@ const ProductScreen: React.FC<Props> = ({ product }) => {
             <Grid container spacing={1}>
                 <Grid item md={6} xs={12}>
                     <Image
-                        src={`/${product.image}`}
+                        src={product.image}
                         alt={product.name}
                         width={640}
                         height={642}

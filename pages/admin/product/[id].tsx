@@ -31,6 +31,9 @@ export declare type AdminProductActionKind =
   | "UPDATE_REQUEST"
   | "UPDATE_SUCCESS"
   | "UPDATE_FAIL"
+  | "UPLOAD_REQUEST"
+  | "UPLOAD_SUCCESS"
+  | "UPLOAD_FAIL"
   ;
 
 export interface AdminProductAction {
@@ -43,13 +46,17 @@ export type AdminProductStateType = {
   error: string;
   loadingUpdate: boolean;
   errorUpdate: string;
+  loadingUpload: boolean;
+  errorUpload: string;
 };
 
 const initialProductState: AdminProductStateType = {
   loading: true,
   error: "",
   loadingUpdate: false,
-  errorUpdate: ""
+  errorUpdate: "",
+  loadingUpload: false,
+  errorUpload: ""
 };
 
 function reducer(
@@ -69,6 +76,12 @@ function reducer(
       return { ...state, loadingUpdate: false, errorUpdate: "" };
     case "UPDATE_FAIL":
       return { ...state, loadingUpdate: false, errorUpdate: action.payload };
+    case "UPLOAD_REQUEST":
+      return { ...state, loadingUpload: true, errorUpload: "" };
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
     default:
       return state;
   }
@@ -83,7 +96,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
 
   const { state } = useContext(Store);
 
-  const [{ loading, error, loadingUpdate }, dispatch] = useReducer(
+  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] = useReducer(
     reducer,
     initialProductState
   );
@@ -137,6 +150,35 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
   }, []);
 
   const classes = useStyles();
+
+  const uploadHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    
+    if(!e.target.files){
+      return
+    }
+
+    const file = e.target.files[0];
+
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post(`/api/admin/upload`, bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo?.token}` 
+        }
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      setValue('image', data.secure_url);
+      enqueueSnackbar('File Uploaded Successfully', { variant: 'success' });
+    } catch (err) { 
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      enqueueSnackbar(getError(err), { variant: 'error' })
+    }
+
+  }
 
   const submitHandler = async (productData: ProductType) => {
     closeSnackbar();
@@ -292,6 +334,13 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                           />
                         )}
                       />
+                    </ListItem>
+                    <ListItem>
+                      <Button variant="contained" component="label">
+                        Upload File
+                        <input type="file" onChange={uploadHandler} hidden />
+                      </Button>
+                      { loadingUpload && <CircularProgress /> }
                     </ListItem>
                     <ListItem>
                       <Controller
