@@ -24,11 +24,16 @@ import { getError } from "../../utils/error";
 import { Store } from "../../utils/Store";
 import useStyles from "../../utils/styles";
 import NextLink from 'next/link'
+import { useSnackbar } from "notistack";
 
 export declare type AdminProductsActionKind =
   | "FETCH_REQUEST"
   | "FETCH_SUCCESS"
-  | "FETCH_FAIL";
+  | "FETCH_FAIL"
+  | "CREATE_REQUEST"
+  | "CREATE_SUCCESS"
+  | "CREATE_FAIL"
+  ;
 
 export interface AdminProductsAction {
   type: AdminProductsActionKind;
@@ -37,12 +42,14 @@ export interface AdminProductsAction {
 
 export type AdminProductsStateType = {
   loading: boolean;
+  loadingCreate: boolean;
   products: ProductType[];
   error: string;
 };
 
 const initialProductState: AdminProductsStateType = {
   loading: true,
+  loadingCreate: false,
   products: [],
   error: "",
 };
@@ -58,6 +65,12 @@ function reducer(
       return { ...state, loading: false, products: action.payload, error: "" };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
+    case "CREATE_REQUEST":
+      return { ...state, loadingCreate: true, error: "" };
+    case "CREATE_SUCCESS":
+      return { ...state, loadingCreate: false, products: action.payload, error: "" };
+    case "CREATE_FAIL":
+      return { ...state, loadingCreate: false, error: action.payload };
     default:
       return state;
   }
@@ -68,7 +81,7 @@ const AdminProducts = () => {
   const { userInfo } = state;
   const router = useRouter();
 
-  const [{ loading, error, products }, dispatch] = useReducer(
+  const [{ loading, error, products, loadingCreate }, dispatch] = useReducer(
     reducer,
     initialProductState
   );
@@ -98,6 +111,31 @@ const AdminProducts = () => {
 
   const classes = useStyles();
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const createHandler = async () => {
+    if(!window.confirm('Are you sure')) {
+      return;
+    }
+
+    try {
+      dispatch({ type: 'CREATE_REQUEST' })
+      const { data } = await axios.post<{ product: ProductType}>(`/api/admin/products`, {
+
+      },{
+        headers: {
+          authorization: `Bearer ${userInfo?.token}`
+        }
+      })
+      dispatch({ type: 'CREATE_SUCCESS' });
+      enqueueSnackbar('Product created successfully', { variant: 'success' })
+      router.push(`/admin/product/${data.product._id}`)
+    } catch (err) {
+      dispatch({ type: 'CREATE_FAIL', payload: getError(err) })
+      enqueueSnackbar(getError(err), { variant: 'error' })
+    }
+  }
+
   return (
     <Layout title={`Product History`}>
       <Grid container spacing={1}>
@@ -126,9 +164,19 @@ const AdminProducts = () => {
           <Card className={classes.section}>
             <List>
               <ListItem>
-                <Typography component="h1" variant="h1">
-                  Products
-                </Typography>
+                <Grid alignItems="center" container>
+                  <Grid item xs={6}>
+                    <Typography component="h1" variant="h1">
+                      Products
+                    </Typography>
+                  </Grid>
+                  <Grid style={{ backgroundColor: 'red' }} item xs={6}>
+                    <Button onClick={createHandler} color="primary" variant="contained">
+                      Create
+                    </Button>
+                    { loadingCreate && <CircularProgress /> }
+                  </Grid>
+                </Grid>
               </ListItem>
 
               <ListItem>
@@ -165,7 +213,7 @@ const AdminProducts = () => {
                               <NextLink href={`/admin/product/${product._id}`} passHref>
                                 <Button size="small" variant="contained" >Edit</Button>
                               </NextLink>{` `}
-                                <Button size="small" variant="contained" >Delete</Button>
+                              <Button size="small" variant="contained" >Delete</Button>
                             </TableCell>
                           </TableRow>
                         ))}
