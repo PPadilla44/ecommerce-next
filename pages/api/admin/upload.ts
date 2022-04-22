@@ -23,7 +23,7 @@ const handler = nc<NextApiRequestWithUser, NextApiResponse>({ onError });
 const upload = multer();
 
 handler.use(isAuth, isAdmin, upload.single('file')).post(async (req, res) => {
-  const streamUpload = (req) => {
+  const streamUpload = (req: NextApiRequestWithUser & { file?: any }) => {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream((error, result) => {
         if (result) {
