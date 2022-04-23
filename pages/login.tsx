@@ -33,6 +33,8 @@ const Login = () => {
 
   const router = useRouter();
   const { redirect } = router.query;
+  console.log(redirect);
+  
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
 
@@ -40,7 +42,8 @@ const Login = () => {
     if (userInfo) {
       router.push("/");
     }
-  }, [router, userInfo]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const classes = useStyles();
 

@@ -24,12 +24,15 @@ const Register = () => {
   const { redirect } = router.query;
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
+  console.log(redirect);
+  
 
   useEffect(() => {
     if (userInfo) {
       router.push("/");
     }
-  }, [router, userInfo]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     handleSubmit,

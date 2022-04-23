@@ -82,7 +82,7 @@ const CartScreen = () => {
                                                             <NextLink passHref href={`/product/${item.slug}`}>
                                                                 <Link>
                                                                     <Image
-                                                                        src={`/${item.image}`}
+                                                                        src={item.image}
                                                                         alt={item.name}
                                                                         width={50}
                                                                         height={50}
