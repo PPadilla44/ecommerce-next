@@ -1,7 +1,7 @@
 import { NextApiResponse } from "next";
 import nc from "next-connect";
 import Order from "../../../models/Order";
-import Product from "../../../models/Prouct";
+import Product from "../../../models/Product";
 import User from "../../../models/User";
 import { NextApiRequestWithUser } from "../../../types";
 import { isAuth, isAdmin } from "../../../utils/auth";

@@ -6,7 +6,7 @@ import Layout from '../../components/Layout';
 import useStyles from '../../utils/styles';
 import Image from 'next/image';
 import db from '../../utils/db';
-import Product from '../../models/Prouct';
+import Product from '../../models/Product';
 import { ProductType } from '../../types'
 import axios from "axios";
 import { Store } from "../../utils/Store";
