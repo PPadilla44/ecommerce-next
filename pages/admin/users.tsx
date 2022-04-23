@@ -30,9 +30,6 @@ export declare type AdminUsersActionKind =
   | "FETCH_REQUEST"
   | "FETCH_SUCCESS"
   | "FETCH_FAIL"
-  | "CREATE_REQUEST"
-  | "CREATE_SUCCESS"
-  | "CREATE_FAIL"
   | "DELETE_REQUEST"
   | "DELETE_SUCCESS"
   | "DELETE_FAIL"
@@ -201,6 +198,7 @@ const AdminUsers = () => {
                           <TableCell>NAME</TableCell>
                           <TableCell>EMAIL</TableCell>
                           <TableCell>ISADMIN</TableCell>
+                          <TableCell>ACTIONS</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>

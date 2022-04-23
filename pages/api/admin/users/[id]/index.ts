@@ -26,14 +26,9 @@ handler.put(async (req, res) => {
 
     if (user) {
         user.name = req.body.name;
-        user.slug = req.body.slug;
-        user.price = req.body.price;
-        user.category = req.body.category;
-        user.image = req.body.image;
-        user.brand = req.body.brand;
-        user.countInStock = req.body.countInStock;
-        user.description = req.body.description;
-
+        user.isAdmin = Boolean(req.body.isAdmin);
+        console.log(req.body);
+        
         await user.save();
         await db.disconnect();
         res.send({ message: 'User Updated Successfully' })
