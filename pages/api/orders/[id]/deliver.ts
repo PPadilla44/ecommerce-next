@@ -16,7 +16,7 @@ handler.put(async (req, res) => {
   const order = await Order.findById(req.query.id);
   if (order) {
     order.isDelivered = true;
-    order.deliveredAt = Date.now();
+    order.deliveredAt = new Date();
     const deliveredOrder = await order.save();
     await db.disconnect();
     res.send({ message: "order delivered", order: deliveredOrder });

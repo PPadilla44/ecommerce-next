@@ -243,7 +243,7 @@ const UserEdit: React.FC<UserEditProps> = ({ params }) => {
                         label="Is Admin"
                         control={
                           <Checkbox
-                            onClick={(e) => setIsAdmin(e.target.checked)}
+                            onChange={(e) => setIsAdmin(e.target.checked)}
                             checked={isAdmin}
                             name="isAdmin"
                           />

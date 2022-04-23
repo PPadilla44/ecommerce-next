@@ -21,13 +21,13 @@ import { Store } from "../utils/Store"
 import Cookies from "js-cookie"
 import { useRouter } from 'next/router'
 
-type LayoutProps = {
+interface LayoutProps {
     title?: string;
     description?: string;
-    children: React.ReactNode;
+    children: React.ReactChild
 }
 
-const Layout = ({ children, title, description }: LayoutProps) => {
+const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
 
     const router = useRouter();
     const { state, dispatch } = useContext(Store);
