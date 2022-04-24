@@ -111,3 +111,15 @@ export type ReviewType = {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export type FilterSearchType = {
+  page?: number;
+  category?: string;
+  brand?: string;
+  sort?: string;
+  min?: number;
+  max?: number;
+  searchQuery?: string;
+  price?: string;
+  rating?: string;
+}

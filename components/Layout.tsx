@@ -129,6 +129,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
 
   useEffect(() => {
     fetchCategories();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
