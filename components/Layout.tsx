@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import NextLink from "next/link"
 import {
     AppBar,
@@ -14,12 +14,25 @@ import {
     Badge,
     Button,
     Menu,
-    MenuItem
+    MenuItem,
+    Box,
+    IconButton,
+    Drawer,
+    List,
+    ListItem,
+    Divider,
+    ListItemText,
 } from "@material-ui/core"
+import MenuIcon from "@material-ui/icons/Menu"
+import CancelButton from "@material-ui/icons/Cancel"
 import useStyles from "../utils/styles"
 import { Store } from "../utils/Store"
 import Cookies from "js-cookie"
 import { useRouter } from 'next/router'
+import { useSnackbar } from 'notistack'
+import axios from 'axios'
+import { getError } from '../utils/error'
+import { ProductType } from '../types'
 
 interface LayoutProps {
     title?: string;
@@ -32,6 +45,10 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
     const router = useRouter();
     const { state, dispatch } = useContext(Store);
     const { darkMode, cart, userInfo } = state;
+
+    const [sidebarVisibile, setSidebarVisibile] = useState(false);
+    const [categories, setCategories] = useState<ProductType['category'][]>([]);
+    const { enqueueSnackbar } = useSnackbar();
 
     const theme = createTheme({
         typography: {
@@ -85,6 +102,26 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
         router.push("/")
     }
 
+    const sidebarOpenHandler = () => {
+        setSidebarVisibile(true);
+    }
+    const sidebarCloseHandler = () => {
+        setSidebarVisibile(false);
+    }
+
+    const fetchCategories = async () => {
+        try {
+            const { data } = await axios.get<ProductType['category'][]>(`/api/products/categories`);
+            setCategories(data);
+        } catch (err) {
+            enqueueSnackbar(getError(err), { variant: 'error' })
+        }
+    }
+
+    useEffect(() => {
+        fetchCategories();
+    }, [])
+
     return (
         <div>
 
@@ -96,25 +133,73 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <AppBar position='static' className={classes.navbar}>
-                    <Toolbar>
-                        <NextLink href={"/"} passHref>
-                            <Link>
-                                <Typography className={classes.brand}>amazona</Typography>
-                            </Link>
-                        </NextLink>
+                    <Toolbar className={classes.toolbar}>
+                        <Box display={"flex"} alignItems="center">
+                            <IconButton
+                                edge="start"
+                                aria-label='open drawer'
+                                onClick={sidebarOpenHandler}
+                            >
+                                <MenuIcon className={classes.navbarButon} />
+                            </IconButton>
+                            <NextLink href={"/"} passHref>
+                                <Link>
+                                    <Typography className={classes.brand}>amazona</Typography>
+                                </Link>
+                            </NextLink>
+                        </Box>
+                        <Drawer
+                            anchor='left'
+                            open={sidebarVisibile}
+                            onClose={sidebarCloseHandler}
+                        >
+                            <List>
+                                <ListItem>
+                                    <Box
+                                        display={"flex"}
+                                        alignItems="center"
+                                        justifyContent={'space-between'}>
+                                        <Typography>Shopping by category</Typography>
+                                        <IconButton
+                                            aria-label='close'
+                                            onClick={sidebarCloseHandler}>
+                                            <CancelButton />
+                                        </IconButton>
+                                    </Box>
+                                </ListItem>
+                                <Divider light />
+                                {categories.map((category) => (
+                                    <NextLink
+                                        key={category}
+                                        href={`/search?category=${category}`}
+                                        passHref
+                                    >
+                                        <ListItem
+                                            button
+                                            component={"a"}
+                                            onClick={sidebarCloseHandler}>
+                                            <ListItemText primary={category} />
+                                        </ListItem>
+                                    </NextLink>
+                                ))}
+                            </List>
+                        </Drawer>
                         <div className={classes.grow}></div>
                         <div>
                             <Switch checked={darkMode} onChange={darkModeChangeHandler} />
                             <NextLink href={"/cart"} passHref>
                                 <Link>
-                                    {
-                                        cart.cartItems.length > 0 ?
-                                            <Badge overlap='rectangular' color='secondary' badgeContent={cart.cartItems.length}>
-                                                Cart
-                                            </Badge>
-                                            :
-                                            'Cart'
-                                    }
+                                    <Typography component={"span"}>
+
+                                        {
+                                            cart.cartItems.length > 0 ?
+                                                <Badge overlap='rectangular' color='secondary' badgeContent={cart.cartItems.length}>
+                                                    Cart
+                                                </Badge>
+                                                :
+                                                'Cart'
+                                        }
+                                    </Typography>
                                 </Link>
                             </NextLink>
                             {
@@ -146,7 +231,11 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
                                     :
 
                                     <NextLink href={"/login"} passHref>
-                                        <Link>Login</Link>
+                                        <Link>
+                                            <Typography component={"span"}>
+                                                Login
+                                            </Typography>
+                                        </Link>
                                     </NextLink>
                             }
                         </div>
