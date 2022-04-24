@@ -27,7 +27,7 @@ const useStyles = makeStyles({
     marginTop: 10,
   },
   form: {
-    width: '100%',
+    width: "100%",
     maxWidth: 800,
     margin: "0 auto",
   },
@@ -42,8 +42,17 @@ const useStyles = makeStyles({
     color: "#f04040",
   },
   fullWidth: {
-    width: '100%'
-  }
+    width: "100%",
+  },
+  reviewForm: {
+    maxWidth: 800,
+    width: "100%",
+  },
+  reviewItem: {
+    marginRight: "1rem",
+    borderRight: "1px #808080 solid",
+    paddingRight: "1rem",
+  },
 });
 
 export default useStyles;

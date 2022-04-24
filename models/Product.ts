@@ -1,5 +1,17 @@
 import { Schema, model, models, Model } from "mongoose";
-import { ProductType } from "../types";
+import { ProductType, ReviewType } from "../types";
+
+const reviewSchemea = new Schema<ReviewType>(
+  {
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    name: { type: String, required: true },
+    rating: { type: Number, default: 0 },
+    comment: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const productSchema = new Schema<ProductType>(
   {
@@ -47,12 +59,14 @@ const productSchema = new Schema<ProductType>(
       type: String,
       required: true,
     },
+    reviews: [reviewSchemea],
   },
   {
     timestamps: true,
   }
 );
 
-const Product: Model<ProductType> = models.Product || model<ProductType>("Product", productSchema);
+const Product: Model<ProductType> =
+  models.Product || model<ProductType>("Product", productSchema);
 
 export default Product;

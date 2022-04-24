@@ -97,7 +97,7 @@ const UserEdit: React.FC<UserEditProps> = ({ params }) => {
     control,
     formState: { errors },
     setValue,
-  } = useForm<UserType>();
+  } = useForm<{name: string, isAdmin: boolean}>();
 
   const [isAdmin, setIsAdmin] = useState(false);
 

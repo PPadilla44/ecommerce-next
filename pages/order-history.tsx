@@ -144,9 +144,9 @@ const OrderHistory = () => {
                       </TableHead>
                       <TableBody>
                         {orders.map((order) => (
-                          <TableRow key={order._id}>
+                          <TableRow key={order._id as string}>
                             <TableCell>
-                              {order._id?.substring(20, 24)}
+                              {(order._id as string)?.substring(20, 24)}
                             </TableCell>
                             <TableCell>{order.createdAt}</TableCell>
                             <TableCell>$ {order.totalPrice}</TableCell>

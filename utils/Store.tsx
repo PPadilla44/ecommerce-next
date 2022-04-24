@@ -1,13 +1,13 @@
 import Cookies from "js-cookie";
 import React, { createContext, useReducer } from "react";
-import { ProductType, ShippingAdressType, UserClientInfo } from "../types";
+import { ProductType, ShippingAddressType, UserClientInfo } from "../types";
 
 export type CartItem = ProductType & { quantity: number };
 
 
 export type CartType = {
     cartItems: CartItem[];
-    shippingAddress: ShippingAdressType;
+    shippingAddress: ShippingAddressType;
     paymentMethod: string;
 }
 
@@ -72,11 +72,11 @@ function reducer(state: StateProps, action: Action): StateProps {
         case 'SAVE_PAYMENT_METHOD':
             return { ...state, cart: { ...state.cart, paymentMethod: action.payload } }
         case 'CART_CLEAR':
-            return { ...state, cart: { ...state.cart, cartItems: [], shippingAddress: {}, paymentMethod: "" }}
+            return { ...state, cart: { ...state.cart, cartItems: [], shippingAddress: {} as ShippingAddressType, paymentMethod: "" }}
         case 'USER_LOGIN':
             return { ...state, userInfo: action.payload }
         case 'USER_LOGOUT':
-            return { ...state, userInfo: null, cart: { cartItems: [], shippingAddress: {}, paymentMethod: "" } }
+            return { ...state, userInfo: null, cart: { cartItems: [], shippingAddress: {} as ShippingAddressType, paymentMethod: "" } }
         default:
             return state
     }

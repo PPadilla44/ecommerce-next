@@ -203,9 +203,9 @@ const AdminUsers = () => {
                       </TableHead>
                       <TableBody>
                         {users.map((user) => (
-                          <TableRow key={user._id}>
+                          <TableRow key={user._id as string}>
                             <TableCell>
-                              {user._id?.substring(20, 24)}
+                              {(user._id as string)?.substring(20, 24)}
                             </TableCell>
                             <TableCell>{user.name}</TableCell>
                             <TableCell>{user.email}</TableCell>

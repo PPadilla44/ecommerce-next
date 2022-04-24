@@ -29,6 +29,7 @@ import { GetServerSideProps } from "next";
 import { OrderType } from "../../types";
 import {
   PayPalButtons,
+  SCRIPT_LOADING_STATE,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
 
@@ -182,8 +183,8 @@ const Order: React.FC<OrderProps> = ({ params }) => {
             currency: "USD",
           },
         });
-        // @ts-ignore
-        paypalDispatch({ type: "setLoadingStatus", value: "pending" });
+        //ts-ignore
+        paypalDispatch({ type: "setLoadingStatus", value: SCRIPT_LOADING_STATE['PENDING'] });
       };
       loadPayPalScript();
     }
@@ -284,7 +285,7 @@ const Order: React.FC<OrderProps> = ({ params }) => {
                         </TableHead>
                         <TableBody>
                           {orderItems.map((item) => (
-                            <TableRow key={item._id}>
+                            <TableRow key={item._id as string}>
                               <TableCell>
                                 <NextLink passHref href={`/product/${item.slug}`}>
                                   <Link>

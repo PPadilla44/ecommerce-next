@@ -146,7 +146,7 @@ const PlaceOrder = () => {
                       </TableHead>
                       <TableBody>
                         {cartItems.map((item) => (
-                          <TableRow key={item._id}>
+                          <TableRow key={item._id as string}>
                             <TableCell>
                               <NextLink passHref href={`/product/${item.slug}`}>
                                 <Link>

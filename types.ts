@@ -1,7 +1,8 @@
 import { NextApiRequest } from "next";
+import { Types } from "mongoose"
 
 export type ProductType = {
-  _id?: string;
+  _id?: Types.ObjectId | string;
   name: string;
   slug: string;
   category: string;
@@ -12,12 +13,24 @@ export type ProductType = {
   numReviews: number;
   countInStock: number;
   description: string;
+  reviews: ReviewType[];
   createdAt?: string;
   updatedAt?: string;
 };
 
+export type ProductForm = {
+  name: string;
+  slug: string;
+  category: string;
+  image: string;
+  price: number;
+  brand: string;
+  countInStock: number;
+  description: string;
+};
+
 export type UserType = {
-  _id?: string;
+  _id?: Types.ObjectId | string;
   name: string;
   email: string;
   password: string;
@@ -26,26 +39,26 @@ export type UserType = {
   updatedAt?: string;
 };
 
-export type ShippingAdressType = {
-  fullName?: string;
-  address?: string;
-  city?: string;
-  postalCode?: string;
-  country?: string;
+export type ShippingAddressType = {
+  fullName: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
 };
 
 export type OrderType = {
-  _id?: string;
+  _id?: Types.ObjectId | string;
   user: string;
   orderItems: {
-    _id?: string;
+    _id?: Types.ObjectId | string;
     name: string;
     quantity: number;
     image: string;
     price: number;
-    slug?: string;
+    slug: string;
   }[];
-  shippingAddress: ShippingAdressType;
+  shippingAddress: ShippingAddressType;
   paymentMethod: string;
   paymentResult: {
     id: string;
@@ -79,7 +92,7 @@ export type UserRegiser = {
 
 export type UserClientInfo = {
   token: string;
-  _id: string;
+  _id?: Types.ObjectId | string;
   email: string;
   isAdmin: boolean;
   name: string;
@@ -87,4 +100,14 @@ export type UserClientInfo = {
 
 export type NextApiRequestWithUser = NextApiRequest & {
   user: UserClientInfo;
+}
+
+export type ReviewType = {
+  _id?: Types.ObjectId | string;
+  user: Types.ObjectId | string;
+  name: string;
+  rating: number;
+  comment: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

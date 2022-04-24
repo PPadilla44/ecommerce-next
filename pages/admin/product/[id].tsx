@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useReducer } from "react";
 import Layout from "../../../components/Layout";
-import { ProductType } from "../../../types";
+import { ProductForm, ProductType } from "../../../types";
 import { getError } from "../../../utils/error";
 import { Store } from "../../../utils/Store";
 import useStyles from "../../../utils/styles";
@@ -23,6 +23,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
 import { GetServerSideProps } from "next";
 import { ParsedUrlQuery } from "querystring";
+import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 
 export declare type AdminProductActionKind =
   | "FETCH_REQUEST"
@@ -106,7 +107,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
     control,
     formState: { errors },
     setValue,
-  } = useForm<ProductType>();
+  } = useForm<ProductForm>();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -164,14 +165,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
 
     try {
       dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post(`/api/admin/upload`, bodyFormData, {
+      const { data } = await axios.post<UploadApiResponse | UploadApiErrorResponse>(`/api/admin/upload`, bodyFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           authorization: `Bearer ${userInfo?.token}` 
         }
       });
       dispatch({ type: 'UPLOAD_SUCCESS' });
-      setValue('image', data.secure_url);
+      setValue('image', data.secure_url as string);
       enqueueSnackbar('File Uploaded Successfully', { variant: 'success' });
     } catch (err) { 
       dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
@@ -180,7 +181,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
 
   }
 
-  const submitHandler = async (productData: ProductType) => {
+  const submitHandler = async (productData: ProductForm) => {
     closeSnackbar();
     try {
       dispatch({ type: 'UPDATE_REQUEST' });

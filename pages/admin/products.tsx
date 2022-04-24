@@ -257,9 +257,9 @@ const AdminProducts = () => {
                       </TableHead>
                       <TableBody>
                         {products.map((product) => (
-                          <TableRow key={product._id}>
+                          <TableRow key={product._id as string}>
                             <TableCell>
-                              {product._id?.substring(20, 24)}
+                              {(product._id as string)?.substring(20, 24)}
                             </TableCell>
                             <TableCell>{product.name}</TableCell>
                             <TableCell>$ {product.price}</TableCell>

@@ -6,14 +6,14 @@ import { Store } from '../utils/Store'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
 import { Controller, useForm } from 'react-hook-form'
-import { ShippingAdressType } from '../types'
+import { ShippingAddressType } from '../types'
 import CheckoutWizard from '../components/CheckoutWizard'
 
 const Shippping = () => {
     const router = useRouter();
     const { state, dispatch } = useContext(Store);
     const { userInfo, cart: { shippingAddress } } = state;
-    const { handleSubmit, control, formState: { errors }, setValue } = useForm<ShippingAdressType>();
+    const { handleSubmit, control, formState: { errors }, setValue } = useForm<ShippingAddressType>();
 
     useEffect(() => {
         if (!userInfo) {
@@ -30,7 +30,7 @@ const Shippping = () => {
 
     const classes = useStyles();
 
-    const submitHandler = async (data: ShippingAdressType) => {
+    const submitHandler = async (data: ShippingAddressType) => {
         dispatch!({ type: 'SAVE_SHIPPING_ADDRESS', payload: data });
         Cookies.set("shippingAddress", JSON.stringify(data));
         router.push('/payment')

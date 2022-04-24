@@ -94,6 +94,7 @@ const AdminOrders = () => {
       }
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const classes = useStyles();
@@ -157,9 +158,9 @@ const AdminOrders = () => {
                       </TableHead>
                       <TableBody>
                         {orders.map((order) => (
-                          <TableRow key={order._id}>
+                          <TableRow key={order._id as string}>
                             <TableCell>
-                              {order._id?.substring(20, 24)}
+                              {(order._id as string)?.substring(20, 24)}
                             </TableCell>
                             <TableCell>{order.user ? order.user.name : 'DELETED USER'}</TableCell>
                             <TableCell>{order.createdAt}</TableCell>

@@ -27,7 +27,8 @@ const data: { users: UserType[], products: ProductType[] } = {
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: "A popular shirt"
+            description: "A popular shirt",
+            reviews: []
         },
         {
             name: "Fit Shirt",
@@ -39,7 +40,8 @@ const data: { users: UserType[], products: ProductType[] } = {
             rating: 4.2,
             numReviews: 10,
             countInStock: 20,
-            description: "A popular shirt"
+            description: "A popular shirt",
+            reviews: []
         },
         {
             name: "Slim Shirt",
@@ -51,7 +53,8 @@ const data: { users: UserType[], products: ProductType[] } = {
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: "A popular shirt"
+            description: "A popular shirt",
+            reviews: []
         },
         {
             name: "Golf Pants",
@@ -63,7 +66,8 @@ const data: { users: UserType[], products: ProductType[] } = {
             rating: 4.3,
             numReviews: 10,
             countInStock: 20,
-            description: "Smart looking pants"
+            description: "Smart looking pants",
+            reviews: []
         },
         {
             name: "Fit Pants",
@@ -75,7 +79,8 @@ const data: { users: UserType[], products: ProductType[] } = {
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: "A popular pants"
+            description: "A popular pants",
+            reviews: []
         },
         {
             name: "Classic Pants",
@@ -87,7 +92,8 @@ const data: { users: UserType[], products: ProductType[] } = {
             rating: 4.5,
             numReviews: 10,
             countInStock: 20,
-            description: "A popular pants"
+            description: "A popular pants",
+            reviews: []
         },
     ]
 };
