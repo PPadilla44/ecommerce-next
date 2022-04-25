@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 import { NextPage, GetServerSideProps } from "next";
 import Layout from "../components/Layout";
-import { Grid } from "@material-ui/core";
+import { Grid, Typography, Link } from "@material-ui/core";
 import db from "../utils/db";
 import Product from "../models/Product";
 import { ProductType } from "../types";
@@ -9,12 +10,17 @@ import { useContext } from "react";
 import { Store } from "../utils/Store";
 import { useRouter } from "next/router";
 import ProductItem from "../components/ProductItem";
+import useStyles from "../utils/styles";
+import Carousel from "react-material-ui-carousel";
+import NextLink from "next/link";
 
 interface Props {
-  products: ProductType[];
+  featuredProducts: ProductType[];
+  topRatedProducts: ProductType[];
 }
 
-const Home: NextPage<Props> = ({ products }) => {
+const Home: NextPage<Props> = ({ featuredProducts, topRatedProducts }) => {
+  const classes = useStyles();
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
 
@@ -34,10 +40,27 @@ const Home: NextPage<Props> = ({ products }) => {
 
   return (
     <Layout>
-      <div>
-        <h1>Products</h1>
+      <>
+        <Carousel className={classes.mt1} animation="slide">
+          {featuredProducts.map((product) => (
+            <NextLink
+              key={product._id as string}
+              href={`/product/${product.slug}`}
+              passHref
+            >
+              <Link>
+                <img
+                  src={product.featuredImage}
+                  alt={product.name}
+                  style={{  width: "100%", height: 300, objectFit: 'cover', objectPosition: 'top' }}
+                />
+              </Link>
+            </NextLink>
+          ))}
+        </Carousel>
+        <Typography variant="h2">Popular Products</Typography>
         <Grid container spacing={3}>
-          {products.map((product) => (
+          {topRatedProducts.map((product) => (
             <Grid item md={4} key={product.name}>
               <ProductItem
                 product={product}
@@ -46,7 +69,7 @@ const Home: NextPage<Props> = ({ products }) => {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </>
     </Layout>
   );
 };
@@ -54,13 +77,26 @@ const Home: NextPage<Props> = ({ products }) => {
 export const getServerSideProps: GetServerSideProps = async () => {
   await db.connect();
 
-  const products = await Product.find({}, "-reviews").lean();
+  const topRatedProductsDocs = await Product.find({}, "-reviews")
+    .lean()
+    .sort({
+      rating: -1,
+    })
+    .limit(6);
+
+  const featuredProductsDocs = await Product.find(
+    { isFeatured: true },
+    "-reviews"
+  )
+    .lean()
+    .limit(3);
 
   await db.disconnect();
 
   return {
     props: {
-      products: products.map(db.covertDocToObj),
+      featuredProducts: featuredProductsDocs.map(db.covertDocToObj),
+      topRatedProducts: topRatedProductsDocs.map(db.covertDocToObj),
     },
   };
 };

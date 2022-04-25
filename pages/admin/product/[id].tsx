@@ -8,11 +8,13 @@ import {
   ListItemText,
   TextField,
   CircularProgress,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import Layout from "../../../components/Layout";
 import { ProductForm, ProductType } from "../../../types";
 import { getError } from "../../../utils/error";
@@ -34,8 +36,7 @@ export declare type AdminProductActionKind =
   | "UPDATE_FAIL"
   | "UPLOAD_REQUEST"
   | "UPLOAD_SUCCESS"
-  | "UPLOAD_FAIL"
-  ;
+  | "UPLOAD_FAIL";
 
 export interface AdminProductAction {
   type: AdminProductActionKind;
@@ -57,7 +58,7 @@ const initialProductState: AdminProductStateType = {
   loadingUpdate: false,
   errorUpdate: "",
   loadingUpload: false,
-  errorUpload: ""
+  errorUpload: "",
 };
 
 function reducer(
@@ -97,10 +98,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
 
   const { state } = useContext(Store);
 
-  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] = useReducer(
-    reducer,
-    initialProductState
-  );
+  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] =
+    useReducer(reducer, initialProductState);
 
   const {
     handleSubmit,
@@ -136,6 +135,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
           setValue("slug", data.slug);
           setValue("price", data.price);
           setValue("image", data.image);
+          setValue("featuredImage", data.featuredImage);
+          setIsFeatured(data?.isFeatured || false);
           setValue("category", data.category);
           setValue("brand", data.brand);
           setValue("countInStock", data.countInStock);
@@ -151,56 +152,64 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
   }, []);
 
   const classes = useStyles();
+  const [isFeatured, setIsFeatured] = useState(false);
 
-  const uploadHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    
-    if(!e.target.files){
-      return
+  const uploadHandler = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    imageField: "image" | "featuredImage" = "image"
+  ) => {
+    if (!e.target.files) {
+      return;
     }
 
     const file = e.target.files[0];
 
     const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    bodyFormData.append("file", file);
 
     try {
-      dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post<UploadApiResponse | UploadApiErrorResponse>(`/api/admin/upload`, bodyFormData, {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post<
+        UploadApiResponse | UploadApiErrorResponse
+      >(`/api/admin/upload`, bodyFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          authorization: `Bearer ${userInfo?.token}` 
-        }
+          "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${userInfo?.token}`,
+        },
       });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
-      setValue('image', data.secure_url as string);
-      enqueueSnackbar('File Uploaded Successfully', { variant: 'success' });
-    } catch (err) { 
-      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
-      enqueueSnackbar(getError(err), { variant: 'error' })
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      setValue(imageField, data.secure_url as string);
+      enqueueSnackbar("File Uploaded Successfully", { variant: "success" });
+    } catch (err) {
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
+      enqueueSnackbar(getError(err), { variant: "error" });
     }
-
-  }
+  };
 
   const submitHandler = async (productData: ProductForm) => {
     closeSnackbar();
+
     try {
-      dispatch({ type: 'UPDATE_REQUEST' });
+      dispatch({ type: "UPDATE_REQUEST" });
       await axios.put(
         `/api/admin/products/${productId}`,
-        productData,
+        {
+          ...productData,
+          isFeatured: isFeatured,
+        },
         {
           headers: {
             authorization: `Bearer ${userInfo?.token}`,
           },
         }
       );
-      dispatch({ type: 'UPDATE_SUCCESS' });
+      dispatch({ type: "UPDATE_SUCCESS" });
       enqueueSnackbar("Product updated successfully", {
         variant: "success",
       });
-      router.push(`/admin/products`)
+      router.push(`/admin/products`);
     } catch (err: any) {
-      dispatch({ type: 'UPDATE_FAIL' });
+      dispatch({ type: "UPDATE_FAIL" });
       enqueueSnackbar(getError(err), {
         variant: "error",
       });
@@ -346,7 +355,55 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                         Upload File
                         <input type="file" onChange={uploadHandler} hidden />
                       </Button>
-                      { loadingUpload && <CircularProgress /> }
+                      {loadingUpload && <CircularProgress />}
+                    </ListItem>
+                    <ListItem>
+                      <FormControlLabel
+                        label="Is Featured"
+                        control={
+                          <Checkbox
+                            onChange={(e) => setIsFeatured(e.target.checked)}
+                            checked={isFeatured}
+                            name="isFeatured"
+                          />
+                        }
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <Controller
+                        name="featuredImage"
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                          required: true,
+                        }}
+                        render={({ field }) => (
+                          <TextField
+                            variant="outlined"
+                            fullWidth
+                            id="featuredImage"
+                            label="Featured Image"
+                            error={Boolean(errors.featuredImage)}
+                            helperText={
+                              errors.featuredImage
+                                ? "Featured Image is required"
+                                : ""
+                            }
+                            {...field}
+                          />
+                        )}
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <Button variant="contained" component="label">
+                        Upload File
+                        <input
+                          type="file"
+                          onChange={(e) => uploadHandler(e, "featuredImage")}
+                          hidden
+                        />
+                      </Button>
+                      {loadingUpload && <CircularProgress />}
                     </ListItem>
                     <ListItem>
                       <Controller
@@ -363,7 +420,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                             id="category"
                             label="Category"
                             error={Boolean(errors.category)}
-                            helperText={errors.category ? "Category is required" : ""}
+                            helperText={
+                              errors.category ? "Category is required" : ""
+                            }
                             {...field}
                           />
                         )}
@@ -406,7 +465,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                             type="number"
                             label="Count in stock"
                             error={Boolean(errors.countInStock)}
-                            helperText={errors.countInStock ? "Count in stock is required" : ""}
+                            helperText={
+                              errors.countInStock
+                                ? "Count in stock is required"
+                                : ""
+                            }
                             {...field}
                           />
                         )}
@@ -428,7 +491,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                             id="description"
                             label="Description"
                             error={Boolean(errors.description)}
-                            helperText={errors.description ? "Description is required" : ""}
+                            helperText={
+                              errors.description
+                                ? "Description is required"
+                                : ""
+                            }
                             {...field}
                           />
                         )}
@@ -444,9 +511,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({ params }) => {
                       >
                         Update
                       </Button>
-                      {
-                        loadingUpdate && <CircularProgress />
-                      }
+                      {loadingUpdate && <CircularProgress />}
                     </ListItem>
                   </List>
                 </form>

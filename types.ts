@@ -14,6 +14,8 @@ export type ProductType = {
   countInStock: number;
   description: string;
   reviews: ReviewType[];
+  featuredImage?: string;
+  isFeatured?: boolean;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -27,6 +29,8 @@ export type ProductForm = {
   brand: string;
   countInStock: number;
   description: string;
+  featuredImage?: string;
+  isFeatured?: boolean;
 };
 
 export type UserType = {

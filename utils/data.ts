@@ -28,6 +28,8 @@ const data: { users: UserType[], products: ProductType[] } = {
             numReviews: 10,
             countInStock: 20,
             description: "A popular shirt",
+            isFeatured: true,
+            featuredImage: "/images/banner1.jpg",
             reviews: []
         },
         {
@@ -41,6 +43,8 @@ const data: { users: UserType[], products: ProductType[] } = {
             numReviews: 10,
             countInStock: 20,
             description: "A popular shirt",
+            isFeatured: true,
+            featuredImage: "/images/banner2.jpg",
             reviews: []
         },
         {

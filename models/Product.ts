@@ -60,6 +60,8 @@ const productSchema = new Schema<ProductType>(
       required: true,
     },
     reviews: [reviewSchemea],
+    featuredImage: { type: String },
+    isFeatured: { type: Boolean, required: true, default: false },
   },
   {
     timestamps: true,
