@@ -1,5 +1,5 @@
 import { NextApiRequest } from "next";
-import { Types } from "mongoose"
+import { Types } from "mongoose";
 
 export type ProductType = {
   _id?: Types.ObjectId | string;
@@ -44,11 +44,12 @@ export type UserType = {
 };
 
 export type ShippingAddressType = {
-  fullName: string;
-  address: string;
-  city: string;
-  postalCode: string;
-  country: string;
+  fullName?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
+  location?: LocationType;
 };
 
 export type OrderType = {
@@ -68,7 +69,7 @@ export type OrderType = {
     id: string;
     status: string;
     email_address: string;
-  }
+  };
   itemsPrice: number;
   shippingPrice: number;
   taxPrice: number;
@@ -81,18 +82,18 @@ export type OrderType = {
   updatedAt?: string;
 };
 
-export type AdminOrderType  = OrderType & {
-    user: {
-      name: string;
-    }
+export type AdminOrderType = OrderType & {
+  user: {
+    name: string;
+  };
 };
 
 export type UserRegiser = {
-  name: string,
-  email: string,
-  password: string,
-  confirmPassword: string,
-}
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 export type UserClientInfo = {
   token: string;
@@ -100,11 +101,11 @@ export type UserClientInfo = {
   email: string;
   isAdmin: boolean;
   name: string;
-}
+};
 
 export type NextApiRequestWithUser = NextApiRequest & {
   user: UserClientInfo;
-}
+};
 
 export type ReviewType = {
   _id?: Types.ObjectId | string;
@@ -114,7 +115,7 @@ export type ReviewType = {
   comment: string;
   createdAt?: string;
   updatedAt?: string;
-}
+};
 
 export type FilterSearchType = {
   page?: number;
@@ -126,4 +127,9 @@ export type FilterSearchType = {
   searchQuery?: string;
   price?: string;
   rating?: string;
-}
+};
+
+export type LocationType = {
+  lat: number;
+  lng: number;
+};

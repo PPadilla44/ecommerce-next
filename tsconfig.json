@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "downlevelIteration": true,
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "es5",
+      "es6"
+    ],
+    "types": [
+      "googlemaps",
+      "markerclustererplus"
     ],
     "allowJs": true,
     "skipLibCheck": true,
